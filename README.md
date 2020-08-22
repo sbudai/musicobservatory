@@ -32,15 +32,6 @@ You can install the development version from
 devtools::install_github("antaldaniel/musicobservatory")
 ```
 
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-library(musicobservatory)
-## basic example code
-```
-
 ## Code of Conduct
 
 Please note that the `musicobservatory` project is released with a
