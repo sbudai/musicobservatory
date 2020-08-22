@@ -1,0 +1,42 @@
+---
+title: "Refresh Data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Refresh Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(musicobservatory)
+library(dplyr)
+library(knitr)
+```
+
+## National Accounts Data
+
+```{r}
+message ("Start download: ", Sys.time())
+national_accounts <-  national_accounts_eurostat()
+message( "Finished with downloading and processing at: ", Sys.time())
+```
+```{r nasummary}
+national_accounts_metadata <- national_accounts %>%
+  group_by ( indicator_description, unit_label, source, last_update_at_source) %>%
+  add_count(values) %>%
+  rename( unique_values = n ) %>%
+  mutate ( latest_data = max(time, na.rm=TRUE)) %>%
+  ungroup() %>%
+  select( all_of(c("indicator_description", "unit_label", "source", "unique_values", "latest_data", "last_update_at_source"))) %>%
+  distinct_all()
+
+kable(national_accounts_metadata)
+```
+

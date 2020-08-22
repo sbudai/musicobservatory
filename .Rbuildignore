@@ -1,0 +1,10 @@
+^LICENSE\.md$
+^.*\.Rproj$
+^\.Rproj\.user$
+^bib$
+^tables$
+^data-raw$
+^not_included$
+^README\.Rmd$
+^\.travis\.yml$
+^CODE_OF_CONDUCT\.md$

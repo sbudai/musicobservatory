@@ -1,0 +1,39 @@
+# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
+
+language: R
+cache: packages
+
+env:
+  global:
+  - GITHUB_REPO: antaldaniel/musicobservatory
+
+r_build_args: --no-build-vignettes --no-manual --no-resave-data
+r_check_args: --no-build-vignettes --no-manual
+r_packages:
+  - devtools
+  - dplyr
+  - tidyr
+  - magrittr
+  - purrr
+  - tibble
+  - ggplot2
+  - tidyselect
+  - stringr
+  - lubridate
+  - knitr
+  - roxygen2
+  - rvest
+  - testthat
+  - usethis
+  - rmarkdown
+  - knitr
+
+
+r_github_packages:
+  - jimhester/covr
+
+before_install:
+  - pip install --user codecov
+  
+after_success:
+  - R -q -e 'covr::codecov(quiet = FALSE)'
