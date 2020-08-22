@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 # musicobservatory
 
 <!-- badges: start -->
+
 [![Travis build status](https://travis-ci.com/antaldaniel/musicobservatory.svg?branch=master)](https://travis-ci.com/antaldaniel/musicobservatory)
 [![Codecov test coverage](https://codecov.io/gh/antaldaniel/eurobarometer/branch/master/graph/badge.svg)](https://codecov.io/gh/antaldaniel/musicobservatory?branch=master)
 [![Project Status: Minimal or no implementation has been done yet, or the repository is only intended to be a limited example, demo, or proof-of-concept.](https://www.repostatus.org/badges/latest/concept.svg)](https://www.repostatus.org/#concept)
@@ -33,14 +34,6 @@ You can install the development version from [GitHub](https://github.com/) with:
 ``` r
 # install.packages("devtools")
 devtools::install_github("antaldaniel/musicobservatory")
-```
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-```{r example}
-library(musicobservatory)
-## basic example code
 ```
 
 ## Code of Conduct
