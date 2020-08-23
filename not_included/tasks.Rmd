@@ -1,0 +1,70 @@
+---
+title: "Tasks"
+author: "Daniel Antal, CFA"
+date: "8/23/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I started to work on the demo, because we want to sign Consortium agreements for the creation of two data observatories.  
+
+
+A data observatory is a well-documented repository of indicators.
+I am a bit uncertain at this point at the final workflow, but I indicate what I think is the right direction, and I would like to discuss this with Sanyi + Istvan and Marta separately.  With Marta we are only working on survey data.
+
+The European Music Observatory, which is something we hope to be tasked with, is supposed to have four pillars (these are the chapters of the bookdown project.)  To get an idea how it is done, take a look at the EU’s latest, just building observatory, whom I would also like to ask, maybe we can cooperate with them.
+
+The first three pillars are collections of well-documented and described indicators about --- as set by a large EU project
+- [Music Economy](https://music.dataobservatory.eu/economy.html)
+- [Music Diversity & Circulation](https://music.dataobservatory.eu/music-diversity-circulation.html)
+- [Music, Society and Citizenship](https://music.dataobservatory.eu/music-society-and-citizenship.html)
+- The [innovation pillar](https://music.dataobservatory.eu/innovation.html) is a bunch of use cases of AI, valuation, forecasting, etc.  We should make 1-2 great shiny apps for this, but it should be hosted separately and only linked.
+
+The Demo Music Observatory
+The demo observatory is a more and more automatically creating bookdown project, i.e. a collection of .Rmd files that showcase the data. It is currently automatically refreshing in html, pdf and epub at each github commit (i.e. approved change.) Before getting to the point how it works, a few words about how the (open) data gets into it automatically.
+
+## The indicator refreshing package
+
+[code.music.dataobservatory.eu/](http://code.music.dataobservatory.eu) contains a new R package where I want to put all reproducible indicator creating functions. 
+
+The observatory will contain various data, partly from automatically acquires sources such as Eurostat, ECB, OECD, and partly from private sources; it will also contain data that we create with Marta with our retroharmonize / Eurostat package pair.
+
+The aim of this package is to programmatically refresh data indicators, and document them (as attributes), furthermore, to create a well-formatted citation and Bibtex object about it. 
+
+This is not a functional package yet, I want to consult it with all, because I created a new S3 class “indicator”.  It should be able to do roughly all what we want to do with an indicator: document it, print it, save it.  Please, take a look here, the working version uses some keywords, names, date of creation, earliest and latest data observation, number of data observations, etc. But I do not want to finalize this before brainstorming, because an S3 object that may have several methods is a real pain to modify later. 
+
+The indicator is a uniform data table, tidy, with lots of metadata attributes that describe it well, and allow automated data documentation and even visualization workflows (think: indicator description into heading or caption of a ggplot2 chart.)
+Obviously, these metadata could be stored in  the table itself (just like we get the data from the Eurostat data warehouse) but that would make the file redundantly large, and worse still, not uniform in shape, i.e. very difficult to join. I want to have as simple as possible indicator tables, i.e. indicator id, observation id (for example, geographical area), value, unit – everything needed for a proper join but not more.  I want to avoid merging dollar figures with euro figures (hence unit “EUR”, “USD”, “NR”) and I would like to use here Eurostat’s unit vocabulary. The indicator ID must be unique, of course, and geographical id should be validated with our package made with Istvan, regions.
+
+Later, I would like to add imputations, well documented, I have a template for this, too, but it is not yet added to the package.  We will use forecasting, backcasting, interpolation, and probably some other methods, but we must always mark then the observations as “actual”, “forecasted”, etc.  I have not put this into the package yet, and it may go to another package, but that should be done.
+All in all, the package creates well described, and uniform, tidy data tables which are saved as .rds files. I would like to discuss this with Sanyi about its practicality. I was thinking about simply returning the tables to memory, and use it later, but I realized that this is absolutely not necessary.  Eurostat, for example, marks every day if a data source is refreshed (and has a calendar of foreseen changes, except for data corrections), so we should not download and re-format data every day.  Every day we should process incremental changes, and store in file the existing information, otherwise we will have plenty of wasted I/O and memory, and re-fresh times will large.  Sure, spot exchange rates or Google Search trends may be updated daily, but population figures only once a year.
+
+It could be a possibility that the latest version of the indicator is saved as internal data of the package, and  called with the data()  function, but I think that after a couple of dozen of indicators this would increase too much the package size.  We should have a good, web based repository where we can store the data. 
+
+## Where to store the data?
+My first idea is to do this in figshare, via the [rfigshare](https://github.com/ropensci/rfigshare)  (Task 3 – Sanyi, Istvan, but also Marta]. As Marta is a very experienced researcher, I would like to consult with her first which format to use (See vignette [Updating public repositories](https://docs.ropensci.org/rfigshare/articles/Updating-public-repositories.html))
+
+Figshare uses the following document types: type = c("dataset", "figure", "media", "poster", "paper", "fileset"), 
+(see [Create a FigShare article (draft)](https://docs.ropensci.org/rfigshare/reference/fs_create.html)) and my hunch would be to go with `fileset`, because it would allow the simulateneous upload of a small PDF mini-article (a machine-generated description of the data) and the data table itself. The idea would be that once we create a new version of an indicator, we immediately upload it to figshare (and if there is a correct API, even better to Zenodo, which is the EU’s official repository), where it gets a new doi (if new dataset), or a new version doi (if updated), and it is accessible with documentation.   This would be a very elegant solution, because each of our indicators that go through our package (and gets validated there) would have a citable doi object identifier.
+
+## The indicator presentation website 
+Currently, each time a new commit is made to the master branch of the music_observatory private repo, a Github action triggers a new build of the html, pdf and epub version of the entire website / documentation on Netlify.  There seems to be a bug [1 – Sanyi?] – while our hugo websites remain intact while a new version is deploying, or if they error, in this case, during deploying (which may take several minutes due to the large PDF) the entire website disappears.
+
+My aim is to create a general documentation of our methods and aims, and eventually each indicator to be knitted automatically into the large bookdown project via a programatically created "child Rmd".  This is relatively easy to do, because knitr has a fantastic function called [knitr_expand](https://bookdown.org/yihui/rmarkdown-cookbook/knit-expand.html).  This allows the creation of a small .Rmd template that can be inserted in a loop to a larger one. For example, the template can generate a summary() and a small ggplot() for each variable in the loop, and insert it as a markdown.  There is a related function knitr_child() which allows a kind of hierarchical creation of large files. 
+
+Task [2 – Sanyi?] could be the creation of a fool-proof knitr_expand() template that prints nicely in html, latex and epub.  In a wors-case scenario I realy on the the knitr functions knitr::is_html_output() etc, which allows conditional rendering for html or latex. (Word is created via latex, but now we will not do it.) Let’s do this incrementally. First, it should only print the indicator. Then summarize it. Than add the bibliography item.  Maybe plot a histogram. Eventually, it should create a nice data table that allows download. Now this may be a challenge, because of course the Latex and EPUB version will not work with Javascript.  So at this point we may have to create a different route for html and latex, in the latex / epub documentation only highlighting data. 
+
+In each chapter ( for example, see this: [https://music.dataobservatory.eu/](https://music.dataobservatory.eu/))   I would like to present about 2-6 indicators, which should be downloaded daily (from the .Rmd file) and presented with the automatically created ‘children’ of the .Rmd file, i.e a well-formatted markdown part that, for example, prints the DT version of the data, and gives a statistical summary below. Or a histogram.
+
+To ease things, I created a print.indicator method for the indicator class, which shows the most important metadata in a header and up to the first 10 observations.  So the first version can be really just print ( this_indicator )
+
+
+## Apps
+
+I would like to create up to 2-3 apps that highlight some of our capabilities, i.e.
+- creating regional indicators (Istvan, COVID impact?)
+- something created from microdata (with Marta)
+- one more that I do not know yet could be any of the topics [here](https://music.dataobservatory.eu/innovation.html).  I can imagine that we give three, super simple examples for each topics, but that will be three very simple apps.

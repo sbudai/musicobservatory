@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • musicobservatory</title>
+<title>A temporary wrapper for creating indicators — create_indicators • musicobservatory</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,8 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="A temporary wrapper for creating indicators — create_indicators" />
+<meta property="og:description" content="Download the demographic data from Eurostat." />
 
 
 
@@ -58,7 +59,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -103,72 +104,37 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>A temporary wrapper for creating indicators</h1>
+    
+    <div class="hidden name"><code>create_indicators.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Download the demographic data from Eurostat.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>create_indicators</span>(<span class='kw'>path</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="create_indicators.html">create_indicators()</a></code> </p>
-        </td>
-        <td><p>A temporary wrapper for creating indicators</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="eurostat_datasets.html">eurostat_datasets</a></code> </p>
-        </td>
-        <td><p>Tables to refresh: Eurostat</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="eurostat_household_consumption.html">eurostat_household_consumption()</a></code> </p>
-        </td>
-        <td><p>Example Downloader</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="indicator.html">indicator()</a></code> <code><a href="indicator.html">is.indicator()</a></code> <code><a href="indicator.html">print(<i>&lt;indicator&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Indicator for Music Observatory</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="musicobservatory.html">musicobservatory</a></code> </p>
-        </td>
-        <td><p>musicobservatory: A package to create reproducibly the Music Observatory data</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="refresh_eurostat.html">refresh_eurostat()</a></code> </p>
-        </td>
-        <td><p>Refresh Eurostat indicators</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>path</th>
+      <td><p>A directory to save the indicators to. If <code>NULL</code> then
+creates a <code><a href='https://rdrr.io/r/base/tempfile.html'>tempdir()</a></code> to save the data.</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>The function does not return a value, only saves the indicators
+to <code>path</code>.</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fl'>FALSE</span>) <span class='fu'>create_indicators</span>()</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
