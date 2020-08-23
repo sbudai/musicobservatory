@@ -9,5 +9,4 @@ create_eurostat_source(code)
 \description{
 Create Eurostat Source Description
 }
-\keyword{internal,}
-\keyword{metadata}
+\keyword{internal}
