@@ -13,6 +13,8 @@
 #' @param date_latest The date of the latest observation.
 #' @param original_source Defaults to {NA_character_}.
 #' @param original_code The identifier in the original source, if applicable.
+#' @param doi The digital object identifier (obtained from a provider)
+#' @param doi_url The URL which points to the uploaded object (in the doi provider inventory)
 #' @param keyword1 The first keywords, must be one of the pillars of the 
 #' observatory.
 #' @param keyword2 The second keyword must be a topic within a pillar.
@@ -21,25 +23,26 @@
 #' @rdname indicator
 #' @return A data.frame or tibble with indicator attributes.
 #' @importFrom dplyr distinct_all
-#' @import assertthat
-#' @importFrom pillar pillar_shaft
+#' @importFrom assertthat assert_that is.date
 #' @examples
 #' test_indicator <- indicator (
 #'                      x <- data.frame ( 
 #'                      geo = rep(c("NL", "BE", "LU"), 4), 
 #'                      time = rep(c(2016:2019),3), 
 #'                      values = runif(12, 1,100)
-#'                      ), 
+#'                      ),
 #'    shortcode = "observatory_test_1", 
 #'    description = "A test indicator with random numbers", 
 #'    date_created = as.Date ( "2020-08-24"),
 #'    date_earliest  = min (x$time, na.rm=TRUE),
 #'    date_latest  =  max(x$time, na.rm=TRUE),
+#'    doi = NA_character_,
+#'    doi_url = NA_character_,
 #'    keyword1 = "test",  keyword2 = "random",  keyword3 = "Benelux"
 #' )
 #' 
 #' ## Only the first 10 observations are printed 
-#' print (test_indicator)
+#' str( test_indicator )
 
 #' @export
 
@@ -51,13 +54,15 @@ indicator <- function(x,
                       date_latest,
                       original_source = NA_character_,
                       original_code = NA_character_,
+                      doi = NA_character_,
+                      doi_url = NA_character_,
                       keyword1, 
                       keyword2, 
                       keyword3, 
                       keywords = NA_character_ ) {
   
   assertthat::assert_that(is.data.frame(x))
-  assertthat::assert_that(is.date(date_created))
+  assertthat::assert_that(assertthat::is.date(date_created))
   assertthat::assert_that(nchar(shortcode)>1)
   assertthat::assert_that(nchar(keyword1)>1)
   assertthat::assert_that(nchar(keyword2)>1)
@@ -74,18 +79,20 @@ indicator <- function(x,
     original_source <- "music.dataobservatory.eu"
   }
   
-  new_indicator (x = x, 
-                 shortcode = shortcode, 
-                 description = description,
-                 date_created = date_created, 
-                 date_earliest = date_earliest,
-                 date_latest = date_latest, 
-                 original_source = "music.dataobservatory.eu",
-                 original_code = original_code,
-                 keyword1 = keyword1, 
-                 keyword2 = keyword2, 
-                 keyword3 = keyword3, 
-                 keywords = keywords )
+  return( new_indicator( x               = x, 
+                         shortcode       = shortcode, 
+                         description     = description,
+                         date_created    = date_created, 
+                         date_earliest   = date_earliest,
+                         date_latest     = date_latest, 
+                         original_source = "music.dataobservatory.eu",
+                         original_code   = original_code,
+                         doi             = doi,
+                         doi_url         = doi_url,
+                         keyword1        = keyword1, 
+                         keyword2        = keyword2, 
+                         keyword3        = keyword3, 
+                         keywords        = keywords ) )
   
 }
 
@@ -127,6 +134,8 @@ new_indicator <- function(x,
                           observations, 
                           original_source = "music.dataobservatory.eu",
                           original_code = NA_character_,
+                          doi = NA_character_,
+                          doi_url = NA_character_,
                           keyword1, 
                           keyword2, 
                           keyword3, 
@@ -146,6 +155,8 @@ new_indicator <- function(x,
   attr(indicator, "date_latest") <- date_latest
   attr(indicator, "observations") <- nrow(dplyr::distinct_all ( x ))
   
+  attr(indicator, "doi") <- doi
+  attr(indicator, "doi_url") <- doi_url
   attr(indicator, "keyword1") <- keyword1
   attr(indicator, "keyword2") <- keyword2
   attr(indicator, "keyword3") <- keyword3
@@ -155,5 +166,5 @@ new_indicator <- function(x,
   
   class(indicator) <- c("indicator", class(indicator) ) 
   
-  indicator
+  return(indicator)
 }
